@@ -12,6 +12,7 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Check if project name is provided
@@ -26,7 +27,9 @@ fi
 PROJECT_NAME=$1
 TARGET_DIR="../$PROJECT_NAME"
 
-echo -e "${GREEN}🚀 Creating new project: $PROJECT_NAME${NC}"
+echo -e "${GREEN}============================================${NC}"
+echo -e "${GREEN}  Creating new project: $PROJECT_NAME${NC}"
+echo -e "${GREEN}============================================${NC}"
 echo ""
 
 # Check if target directory already exists
@@ -50,6 +53,7 @@ cp -r .env.TEST.template "$TARGET_DIR/"
 cp -r .env.PROD.template "$TARGET_DIR/"
 cp -r .gitignore "$TARGET_DIR/"
 cp -r integrate-flightphp-skeleton.sh "$TARGET_DIR/"
+cp -r generate-passwords.sh "$TARGET_DIR/"
 cp -r IMPORTANT-PROJECT-STRUCTURE.md "$TARGET_DIR/"
 cp -r TECHNOLOGY-STANDARDS.md "$TARGET_DIR/"
 
@@ -88,18 +92,18 @@ Created from bpm-phpProjectsBoilerplate
 ## Quick Start
 
 \`\`\`bash
-# 1. Set passwords in .env.DEV
-nano .env.DEV
-
-# 2. Integrate FlightPHP (optional but recommended)
+# Integrate FlightPHP (optional but recommended)
 ./integrate-flightphp-skeleton.sh
 
-# 3. Start DEV environment
+# Start DEV environment
 sudo docker compose -f docker-compose.DEV.yml up -d --build
-
-# 4. Open in browser
-# https://$PROJECT_NAME.dev.bpmspace.net
 \`\`\`
+
+## URLs
+
+- App: https://$PROJECT_NAME.dev.bpmspace.net
+- phpMyAdmin: https://pma-$PROJECT_NAME.dev.bpmspace.net
+- Redis Admin: https://pmr-$PROJECT_NAME.dev.bpmspace.net
 
 ## Documentation
 
@@ -107,9 +111,15 @@ sudo docker compose -f docker-compose.DEV.yml up -d --build
 - See \`TECHNOLOGY-STANDARDS.md\` for coding standards
 EOF
 
-# Initialize new git repository
-echo "🔧 Initializing git repository..."
+# Generate secure passwords
+echo ""
+echo -e "${CYAN}Generating secure passwords...${NC}"
 cd "$TARGET_DIR"
+./generate-passwords.sh
+
+# Initialize new git repository
+echo ""
+echo "🔧 Initializing git repository..."
 git init
 git add .
 git commit -m "Initial commit from bpm-phpProjectsBoilerplate
@@ -117,17 +127,23 @@ git commit -m "Initial commit from bpm-phpProjectsBoilerplate
 🤖 Generated with Claude Code"
 
 echo ""
-echo -e "${GREEN}✅ Project $PROJECT_NAME created successfully!${NC}"
+echo -e "${GREEN}============================================${NC}"
+echo -e "${GREEN}  Project $PROJECT_NAME created!${NC}"
+echo -e "${GREEN}============================================${NC}"
 echo ""
 echo "📍 Location: $TARGET_DIR"
 echo ""
-echo "Next steps:"
+echo -e "${YELLOW}Next steps:${NC}"
 echo "  1. cd $TARGET_DIR"
-echo "  2. nano .env.DEV  # Set REDIS_ADMIN_PASS"
-echo "  3. ./integrate-flightphp-skeleton.sh  # Optional: Add FlightPHP"
-echo "  4. sudo docker compose -f docker-compose.DEV.yml up -d --build"
+echo "  2. ./integrate-flightphp-skeleton.sh  # Optional: Add FlightPHP"
+echo "  3. sudo docker compose -f docker-compose.DEV.yml up -d --build"
 echo ""
-echo "  5. Create GitHub repo:"
+echo "  4. Create GitHub repo:"
 echo "     gh repo create $PROJECT_NAME --private --source=. --remote=origin"
 echo "     git push -u origin master"
+echo ""
+echo -e "${CYAN}URLs after start:${NC}"
+echo "  App:        https://$PROJECT_NAME.dev.bpmspace.net"
+echo "  phpMyAdmin: https://pma-$PROJECT_NAME.dev.bpmspace.net"
+echo "  Redis:      https://pmr-$PROJECT_NAME.dev.bpmspace.net"
 echo ""

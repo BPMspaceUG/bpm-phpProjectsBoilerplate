@@ -69,7 +69,8 @@ curl -fsSL "$RAW_URL/.env.PROD.template" -o .env.PROD.template
 
 # Download scripts
 curl -fsSL "$RAW_URL/integrate-flightphp-skeleton.sh" -o integrate-flightphp-skeleton.sh
-chmod +x integrate-flightphp-skeleton.sh
+curl -fsSL "$RAW_URL/generate-passwords.sh" -o generate-passwords.sh
+chmod +x integrate-flightphp-skeleton.sh generate-passwords.sh
 
 # Download documentation
 curl -fsSL "$RAW_URL/IMPORTANT-PROJECT-STRUCTURE.md" -o IMPORTANT-PROJECT-STRUCTURE.md
@@ -116,21 +117,24 @@ Created with bpm-phpProjectsBoilerplate
 ## Quick Start
 
 \`\`\`bash
-# 1. Set passwords
-nano .env.DEV
-
-# 2. Optional: Add FlightPHP
+# Optional: Add FlightPHP
 ./integrate-flightphp-skeleton.sh
 
-# 3. Start
+# Start
 sudo docker compose -f docker-compose.DEV.yml up -d --build
 \`\`\`
 
 ## URLs
 - App: https://$PROJECT_NAME.dev.bpmspace.net
+- phpMyAdmin: https://pma-$PROJECT_NAME.dev.bpmspace.net
 - Redis Admin: https://pmr-$PROJECT_NAME.dev.bpmspace.net
 EOF
 fi
+
+# Generate secure passwords
+echo ""
+echo -e "${CYAN}Generating secure passwords...${NC}"
+./generate-passwords.sh
 
 echo ""
 echo -e "${GREEN}============================================${NC}"
@@ -144,17 +148,18 @@ echo "  - Dockerfile.Apache.DEV"
 echo "  - Dockerfile.Apache.TEST.PROD"
 echo "  - docker-compose.DEV.yml"
 echo "  - docker-compose.TEST.yml"
-echo "  - .env.DEV / .env.TEST"
+echo "  - .env.DEV / .env.TEST (with generated passwords)"
 echo "  - integrate-flightphp-skeleton.sh"
+echo "  - generate-passwords.sh"
 echo "  - IMPORTANT-PROJECT-STRUCTURE.md"
 echo "  - TECHNOLOGY-STANDARDS.md"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "  1. nano .env.DEV              # Set REDIS_ADMIN_PASS"
-echo "  2. ./integrate-flightphp-skeleton.sh  # Optional: Add FlightPHP"
-echo "  3. sudo docker compose -f docker-compose.DEV.yml up -d --build"
+echo "  1. ./integrate-flightphp-skeleton.sh  # Optional: Add FlightPHP"
+echo "  2. sudo docker compose -f docker-compose.DEV.yml up -d --build"
 echo ""
 echo -e "${CYAN}URLs after start:${NC}"
-echo "  App:   https://$PROJECT_NAME.dev.bpmspace.net"
-echo "  Redis: https://pmr-$PROJECT_NAME.dev.bpmspace.net"
+echo "  App:        https://$PROJECT_NAME.dev.bpmspace.net"
+echo "  phpMyAdmin: https://pma-$PROJECT_NAME.dev.bpmspace.net"
+echo "  Redis:      https://pmr-$PROJECT_NAME.dev.bpmspace.net"
 echo ""
