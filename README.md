@@ -73,12 +73,13 @@ git push -u origin master
 - `sync_claude_agents_skills.sh` - Update Claude AI agents/skills
 
 ### Claude AI Agents (.claude/agents/)
-- `php-specialist.md` - FlightPHP/PHP expert
-- `test-specialist.md` - Testing automation
-- `frontend-developer.md` - HTML/CSS/JS/DataTables
-- `database-specialist.md` - MariaDB optimization
-- `latte-specialist.md` - Latte template engine
-- `code-reviewer.md` - Code quality review
+- `orchestrator.md` - Tech lead, task coordination, review gates
+- `backend-architect.md` - FlightPHP architecture, API contracts
+- `backend-developer.md` - PHP implementation, endpoints
+- `frontend-expert.md` - Latte (deep) + DataTables (MANDATORY)
+- `data-cache-engineer.md` - MariaDB + Redis specialist
+- `devops-container.md` - Docker, Apache, Caddy
+- `qa-security-reviewer.md` - Testing, security, release gate (HARD STOP authority)
 
 ### Claude AI Skills (.claude/skills/)
 - `php-standards/` - PHP coding standards
@@ -145,13 +146,14 @@ project/
 ├── IMPORTANT-PROJECT-STRUCTURE.md
 ├── TECHNOLOGY-STANDARDS.md
 ├── .claude/
-│   ├── agents/                 # AI specialists
-│   │   ├── php-specialist.md
-│   │   ├── test-specialist.md
-│   │   ├── frontend-developer.md
-│   │   ├── database-specialist.md
-│   │   ├── latte-specialist.md
-│   │   └── code-reviewer.md
+│   ├── agents/                 # AI specialists (7 agents)
+│   │   ├── orchestrator.md
+│   │   ├── backend-architect.md
+│   │   ├── backend-developer.md
+│   │   ├── frontend-expert.md
+│   │   ├── data-cache-engineer.md
+│   │   ├── devops-container.md
+│   │   └── qa-security-reviewer.md
 │   └── skills/                 # Coding standards
 │       ├── php-standards/
 │       ├── testing-standards/

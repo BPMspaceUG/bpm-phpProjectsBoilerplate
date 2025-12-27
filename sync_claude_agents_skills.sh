@@ -32,12 +32,13 @@ mkdir -p .claude/skills/frontend-standards
 echo -e "${CYAN}Downloading agents...${NC}"
 
 AGENTS=(
-    "php-specialist"
-    "test-specialist"
-    "frontend-developer"
-    "database-specialist"
-    "latte-specialist"
-    "code-reviewer"
+    "orchestrator"
+    "backend-architect"
+    "backend-developer"
+    "frontend-expert"
+    "data-cache-engineer"
+    "devops-container"
+    "qa-security-reviewer"
 )
 
 for agent in "${AGENTS[@]}"; do
