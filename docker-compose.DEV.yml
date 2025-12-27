@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Apache.DEV
-    image: ${PROJECT_NAME}_DEV:latest
     container_name: ${PROJECT_NAME}_DEV
     hostname: ${PROJECT_NAME}_DEV
     restart: always
