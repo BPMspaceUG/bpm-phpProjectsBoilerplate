@@ -206,7 +206,7 @@ sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml down
 sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml up -d --build
 
 # Enter container
-docker exec -it ${PROJECT_NAME}_DEV bash
+docker exec -it ${PROJECT_NAME}_dev bash
 ```
 
 > **Note:** `--env-file` is required to substitute `${PROJECT_NAME}` variables.

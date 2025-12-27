@@ -23,7 +23,7 @@ ext_backup.sh
 
 ### Inside Container
 ```bash
-docker exec -it ${PROJECT_NAME}_DEV bash /var/scripts/cont_example.sh
+docker exec -it ${PROJECT_NAME}_dev bash /var/scripts/cont_example.sh
 ```
 
 ### On Host

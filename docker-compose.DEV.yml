@@ -1,10 +1,10 @@
 services:
-  ${PROJECT_NAME}_DEV:
+  ${PROJECT_NAME}_dev:
     build:
       context: .
       dockerfile: Dockerfile.Apache.DEV
-    container_name: ${PROJECT_NAME}_DEV
-    hostname: ${PROJECT_NAME}_DEV
+    container_name: ${PROJECT_NAME}_dev
+    hostname: ${PROJECT_NAME}_dev
     restart: always
     environment:
       - IMAGE_DATE=not set in DEV
@@ -13,10 +13,10 @@ services:
       - APP_ENV=DEV
       - APP_NAME=${APP_NAME}
       - LOCALLOG=true
-      - REDIS_SERVER=${PROJECT_NAME}-redisserver_DEV
+      - REDIS_SERVER=${PROJECT_NAME}-redisserver_dev
       - REDIS_PORT=6379
       - REDIS_CACHETIME=3600
-      - DB_HOST=${PROJECT_NAME}-mariadb_DEV
+      - DB_HOST=${PROJECT_NAME}-mariadb_dev
       - DB_NAME=${MYSQL_DATABASE}
       - DB_USER=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
@@ -25,20 +25,20 @@ services:
       - './scripts:/var/scripts'
     working_dir: /var/www/html
     depends_on:
-      - ${PROJECT_NAME}-mariadb_DEV
-      - ${PROJECT_NAME}-redisserver_DEV
+      - ${PROJECT_NAME}-mariadb_dev
+      - ${PROJECT_NAME}-redisserver_dev
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
       - caddy
     labels:
       caddy: ${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams http}}"
 
-  ${PROJECT_NAME}-mariadb_DEV:
+  ${PROJECT_NAME}-mariadb_dev:
     image: mariadb:latest
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql_mode=""
-    container_name: ${PROJECT_NAME}-mariadb_DEV
-    hostname: ${PROJECT_NAME}-mariadb_DEV
+    container_name: ${PROJECT_NAME}-mariadb_dev
+    hostname: ${PROJECT_NAME}-mariadb_dev
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -46,63 +46,63 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ${PROJECT_NAME}-mariadb-data_DEV:/var/lib/mysql
+      - ${PROJECT_NAME}-mariadb-data_dev:/var/lib/mysql
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
 
-  ${PROJECT_NAME}-phpmyadmin_DEV:
+  ${PROJECT_NAME}-phpmyadmin_dev:
     image: phpmyadmin:latest
-    container_name: ${PROJECT_NAME}-phpmyadmin_DEV
-    hostname: ${PROJECT_NAME}-phpmyadmin_DEV
+    container_name: ${PROJECT_NAME}-phpmyadmin_dev
+    hostname: ${PROJECT_NAME}-phpmyadmin_dev
     restart: always
     environment:
-      - PMA_HOST=${PROJECT_NAME}-mariadb_DEV
+      - PMA_HOST=${PROJECT_NAME}-mariadb_dev
       - MEMORY_LIMIT=1516M
       - UPLOAD_LIMIT=1024M
     depends_on:
-      - ${PROJECT_NAME}-mariadb_DEV
+      - ${PROJECT_NAME}-mariadb_dev
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
       - caddy
     labels:
       caddy: pma-${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams 80}}"
 
-  ${PROJECT_NAME}-redisserver_DEV:
+  ${PROJECT_NAME}-redisserver_dev:
     image: redis/redis-stack:latest
-    container_name: ${PROJECT_NAME}-redisserver_DEV
-    hostname: ${PROJECT_NAME}-redisserver_DEV
+    container_name: ${PROJECT_NAME}-redisserver_dev
+    hostname: ${PROJECT_NAME}-redisserver_dev
     restart: always
     volumes:
-      - ${PROJECT_NAME}-redis-data_DEV:/data
+      - ${PROJECT_NAME}-redis-data_dev:/data
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
 
-  ${PROJECT_NAME}-phpredisadmin_DEV:
+  ${PROJECT_NAME}-phpredisadmin_dev:
     image: erikdubbelboer/phpredisadmin
-    container_name: ${PROJECT_NAME}-phpredisadmin_DEV
-    hostname: ${PROJECT_NAME}-phpredisadmin_DEV
+    container_name: ${PROJECT_NAME}-phpredisadmin_dev
+    hostname: ${PROJECT_NAME}-phpredisadmin_dev
     restart: always
     environment:
-      - REDIS_1_HOST=${PROJECT_NAME}-redisserver_DEV
+      - REDIS_1_HOST=${PROJECT_NAME}-redisserver_dev
       - REDIS_1_NAME=${APP_NAME}
       - ADMIN_USER=${REDIS_ADMIN_USER}
       - ADMIN_PASS=${REDIS_ADMIN_PASS}
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
       - caddy
     labels:
       caddy: pmr-${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams 80}}"
 
 volumes:
-  ${PROJECT_NAME}-mariadb-data_DEV:
+  ${PROJECT_NAME}-mariadb-data_dev:
     driver: local
-  ${PROJECT_NAME}-redis-data_DEV:
+  ${PROJECT_NAME}-redis-data_dev:
     driver: local
 
 networks:
-  ${PROJECT_NAME}_DEV:
+  ${PROJECT_NAME}_dev:
     driver: bridge
   caddy:
     external: true

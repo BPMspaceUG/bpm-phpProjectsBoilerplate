@@ -69,8 +69,8 @@ project-root/
 | Code | Volume mounted (live edit) | Baked into image |
 | Dev Tools | vim, nano, jq, git, etc. | Minimal |
 | Domain | *.dev.bpmspace.net | *.test.bpmspace.net |
-| Container Suffix | _DEV | _TEST |
-| Network Suffix | _DEV | _TEST |
+| Container Suffix | _dev | _test |
+| Network Suffix | _dev | _test |
 
 ---
 

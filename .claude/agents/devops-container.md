@@ -124,21 +124,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Apache.DEV
-    container_name: ${PROJECT_NAME}_DEV
+    container_name: ${PROJECT_NAME}_dev
     volumes:
       - ./www:/var/www/html
       - ./scripts:/var/scripts
     environment:
-      - DB_HOST=${PROJECT_NAME}-mariadb_DEV
+      - DB_HOST=${PROJECT_NAME}-mariadb_dev
       - DB_NAME=${MYSQL_DATABASE}
       - DB_USER=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
-      - REDIS_HOST=${PROJECT_NAME}-redis_DEV
+      - REDIS_HOST=${PROJECT_NAME}-redis_dev
     depends_on:
       - mariadb
       - redis
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
     labels:
       caddy: ${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams 80}}"
@@ -146,7 +146,7 @@ services:
 
   mariadb:
     image: mariadb:latest
-    container_name: ${PROJECT_NAME}-mariadb_DEV
+    container_name: ${PROJECT_NAME}-mariadb_dev
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -154,9 +154,9 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - mariadb_data_DEV:/var/lib/mysql
+      - mariadb_data_dev:/var/lib/mysql
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -166,15 +166,15 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: ${PROJECT_NAME}-pma_DEV
+    container_name: ${PROJECT_NAME}-pma_dev
     environment:
-      PMA_HOST: ${PROJECT_NAME}-mariadb_DEV
+      PMA_HOST: ${PROJECT_NAME}-mariadb_dev
       PMA_USER: root
       PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - mariadb
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
     labels:
       caddy: pma-${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams 80}}"
@@ -182,11 +182,11 @@ services:
 
   redis:
     image: redis/redis-stack:latest
-    container_name: ${PROJECT_NAME}-redis_DEV
+    container_name: ${PROJECT_NAME}-redis_dev
     volumes:
-      - redis_data_DEV:/data
+      - redis_data_dev:/data
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -196,28 +196,28 @@ services:
 
   redis-admin:
     image: erikdubbelboer/phpredisadmin:latest
-    container_name: ${PROJECT_NAME}-redis-admin_DEV
+    container_name: ${PROJECT_NAME}-redis-admin_dev
     environment:
-      REDIS_1_HOST: ${PROJECT_NAME}-redis_DEV
+      REDIS_1_HOST: ${PROJECT_NAME}-redis_dev
       REDIS_1_NAME: ${PROJECT_NAME}
       ADMIN_USER: ${REDIS_ADMIN_USER}
       ADMIN_PASS: ${REDIS_ADMIN_PASS}
     depends_on:
       - redis
     networks:
-      - ${PROJECT_NAME}_DEV
+      - ${PROJECT_NAME}_dev
     labels:
       caddy: pmr-${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams 80}}"
     restart: unless-stopped
 
 networks:
-  ${PROJECT_NAME}_DEV:
-    name: ${PROJECT_NAME}_DEV
+  ${PROJECT_NAME}_dev:
+    name: ${PROJECT_NAME}_dev
 
 volumes:
-  mariadb_data_DEV:
-  redis_data_DEV:
+  mariadb_data_dev:
+  redis_data_dev:
 ```
 
 ## Environment Parity
@@ -226,7 +226,7 @@ volumes:
 |--------|-----|------|------|
 | Code | Volume mounted | Baked in image | Baked in image |
 | Dev tools | vim, nano, git | None | None |
-| Suffix | _DEV | _TEST | _PROD |
+| Suffix | _dev | _test | _PROD |
 | Domain | *.dev.bpmspace.net | *.test.bpmspace.net | *.bpmspace.net |
 | PHP errors | Display on | Log only | Log only |
 | Opcache | Disabled | Enabled | Enabled |
