@@ -1,0 +1,55 @@
+# ============================================
+# TEST / PRODUCTION VERSION (Alpine - Minimal!)
+# Dockerfile.Apache.TEST.PROD
+# ============================================
+FROM php:apache-alpine
+
+ARG ARG_VERSION
+ARG ARG_PUSH_SHA
+ARG ARG_DATE
+
+ENV IMAGE_DATE=$ARG_DATE \
+    IMAGE_VERSION=$ARG_VERSION \
+    PUSH_SHA=$ARG_PUSH_SHA \
+    APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+# Install ONLY runtime dependencies (minimal)
+RUN apk update && apk add --no-cache \
+    libzip-dev \
+    unzip \
+    wget \
+    curl \
+    && docker-php-ext-install pdo_mysql mysqli zip \
+    && docker-php-source delete \
+    && rm -rf /var/cache/apk/*
+
+# Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --quiet \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer
+
+# Copy application code (baked into image!)
+COPY ./www /var/www/html
+COPY ./scripts /var/scripts
+
+# Install PHP dependencies
+RUN cd /var/www/html && composer install --no-dev --optimize-autoloader --no-interaction 2>/dev/null || true
+
+# Update Apache DocumentRoot to public folder
+RUN sed -ri -e 's!/var/www/localhost/htdocs!/var/www/html/public!g' /etc/apache2/httpd.conf 2>/dev/null || true
+
+# Create .htaccess support
+RUN sed -i '/<Directory "\/var\/www/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/httpd.conf 2>/dev/null || true
+
+# Set permissions
+RUN chown -R apache:apache /var/www/html 2>/dev/null || chown -R www-data:www-data /var/www/html 2>/dev/null || true \
+    && chown -R apache:apache /var/scripts 2>/dev/null || chown -R www-data:www-data /var/scripts 2>/dev/null || true
+
+# Directory for backups
+RUN mkdir -p /var/www/redisbackup \
+    && chown -R apache:apache /var/www/redisbackup 2>/dev/null || chown -R www-data:www-data /var/www/redisbackup 2>/dev/null || true
+
+WORKDIR /var/www/html
+
+CMD ["httpd-foreground"]

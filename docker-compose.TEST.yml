@@ -1,0 +1,62 @@
+services:
+  ${PROJECT_NAME}_TEST:
+    build:
+      context: .
+      dockerfile: Dockerfile.Apache.TEST.PROD
+    container_name: ${PROJECT_NAME}_TEST
+    hostname: ${PROJECT_NAME}_TEST
+    restart: always
+    environment:
+      - IMAGE_DATE=${IMAGE_DATE}
+      - IMAGE_VERSION=${IMAGE_VERSION}
+      - PUSH_SHA=${PUSH_SHA}
+      - APP_ENV=TEST
+      - APP_NAME=${APP_NAME}
+      - LOCALLOG=true
+      - REDIS_SERVER=${PROJECT_NAME}-redisserver_TEST
+      - REDIS_PORT=6379
+      - REDIS_CACHETIME=3600
+    working_dir: /var/www/html
+    networks:
+      - ${PROJECT_NAME}_TEST
+      - caddy
+    labels:
+      caddy: ${PROJECT_NAME}.test.bpmspace.net
+      caddy.reverse_proxy: "{{upstreams http}}"
+
+  ${PROJECT_NAME}-redisserver_TEST:
+    image: redis/redis-stack:latest
+    container_name: ${PROJECT_NAME}-redisserver_TEST
+    hostname: ${PROJECT_NAME}-redisserver_TEST
+    restart: always
+    volumes:
+      - ${PROJECT_NAME}-redis-data_TEST:/data
+    networks:
+      - ${PROJECT_NAME}_TEST
+
+  ${PROJECT_NAME}-phpredisadmin_TEST:
+    image: erikdubbelboer/phpredisadmin
+    container_name: ${PROJECT_NAME}-phpredisadmin_TEST
+    hostname: ${PROJECT_NAME}-phpredisadmin_TEST
+    restart: always
+    environment:
+      - REDIS_1_HOST=${PROJECT_NAME}-redisserver_TEST
+      - REDIS_1_NAME=${APP_NAME}
+      - ADMIN_USER=${REDIS_ADMIN_USER}
+      - ADMIN_PASS=${REDIS_ADMIN_PASS}
+    networks:
+      - ${PROJECT_NAME}_TEST
+      - caddy
+    labels:
+      caddy: pmr-${PROJECT_NAME}.test.bpmspace.net
+      caddy.reverse_proxy: "{{upstreams 80}}"
+
+volumes:
+  ${PROJECT_NAME}-redis-data_TEST:
+    driver: local
+
+networks:
+  ${PROJECT_NAME}_TEST:
+    driver: bridge
+  caddy:
+    external: true

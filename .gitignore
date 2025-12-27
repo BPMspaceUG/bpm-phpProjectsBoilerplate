@@ -1,0 +1,46 @@
+# ============================================
+# Git Ignore for PHP/Docker Projects
+# ============================================
+
+# Environment files with secrets (NEVER commit these!)
+.env.DEV
+.env.TEST
+.env.PROD
+.env
+
+# Templates are OK to commit
+!.env.*.template
+
+# Composer
+/www/vendor/
+composer.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+/www/cache/
+/www/tmp/
+
+# Node (if using frontend build tools)
+node_modules/
+npm-debug.log
+
+# Build artifacts
+*.phar
+
+# Temporary files
+*.tmp
+*.bak
