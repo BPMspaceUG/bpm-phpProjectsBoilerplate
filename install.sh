@@ -165,6 +165,33 @@ echo ""
 echo -e "${CYAN}Installing Claude Agents & Skills...${NC}"
 ./sync_claude_agents_skills.sh
 
+# Fix ownership of AI tool directories (may be created by root/other users)
+CURRENT_USER=$(whoami)
+echo ""
+echo -e "${CYAN}Fixing ownership of AI tool directories...${NC}"
+for dir in .claude .codex .gemini; do
+    if [ -d "$dir" ]; then
+        if [ "$(stat -c '%U' "$dir" 2>/dev/null)" != "$CURRENT_USER" ]; then
+            echo "  Fixing $dir ownership to $CURRENT_USER..."
+            sudo chown -R "$CURRENT_USER:$CURRENT_USER" "$dir" 2>/dev/null || true
+        fi
+    fi
+done
+
+# Install claude-mem if not already installed
+echo ""
+echo -e "${CYAN}Checking claude-mem installation...${NC}"
+if command -v npx &> /dev/null; then
+    if ! npx claude-mem status 2>/dev/null | grep -q "is installed"; then
+        echo "  Installing claude-mem for persistent memory..."
+        npx claude-mem install --user --force 2>/dev/null || echo "  claude-mem install requires manual setup: npx claude-mem install"
+    else
+        echo "  claude-mem already installed"
+    fi
+else
+    echo -e "${YELLOW}  npx not found - skip claude-mem (install Node.js for claude-mem support)${NC}"
+fi
+
 # Install FlightPHP Skeleton if requested
 if [ "$INSTALL_SKELETON" = true ]; then
     echo ""
@@ -188,7 +215,7 @@ echo "  - .env.DEV / .env.TEST (with generated passwords)"
 echo "  - integrate-flightphp-skeleton.sh"
 echo "  - generate-passwords.sh"
 echo "  - sync_claude_agents_skills.sh"
-echo "  - .claude/agents/ (6 specialized agents)"
+echo "  - .claude/agents/ (7 specialized agents)"
 echo "  - .claude/skills/ (4 skill sets)"
 echo "  - IMPORTANT-PROJECT-STRUCTURE.md"
 echo "  - TECHNOLOGY-STANDARDS.md"
