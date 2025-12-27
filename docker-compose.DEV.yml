@@ -16,16 +16,57 @@ services:
       - REDIS_SERVER=${PROJECT_NAME}-redisserver_DEV
       - REDIS_PORT=6379
       - REDIS_CACHETIME=3600
+      - DB_HOST=${PROJECT_NAME}-mariadb_DEV
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - './www:/var/www/html'
       - './scripts:/var/scripts'
     working_dir: /var/www/html
+    depends_on:
+      - ${PROJECT_NAME}-mariadb_DEV
+      - ${PROJECT_NAME}-redisserver_DEV
     networks:
       - ${PROJECT_NAME}_DEV
       - caddy
     labels:
       caddy: ${PROJECT_NAME}.dev.bpmspace.net
       caddy.reverse_proxy: "{{upstreams http}}"
+
+  ${PROJECT_NAME}-mariadb_DEV:
+    image: mariadb:latest
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql_mode=""
+    container_name: ${PROJECT_NAME}-mariadb_DEV
+    hostname: ${PROJECT_NAME}-mariadb_DEV
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ${PROJECT_NAME}-mariadb-data_DEV:/var/lib/mysql
+    networks:
+      - ${PROJECT_NAME}_DEV
+
+  ${PROJECT_NAME}-phpmyadmin_DEV:
+    image: phpmyadmin:latest
+    container_name: ${PROJECT_NAME}-phpmyadmin_DEV
+    hostname: ${PROJECT_NAME}-phpmyadmin_DEV
+    restart: always
+    environment:
+      - PMA_HOST=${PROJECT_NAME}-mariadb_DEV
+      - MEMORY_LIMIT=1516M
+      - UPLOAD_LIMIT=1024M
+    depends_on:
+      - ${PROJECT_NAME}-mariadb_DEV
+    networks:
+      - ${PROJECT_NAME}_DEV
+      - caddy
+    labels:
+      caddy: pma-${PROJECT_NAME}.dev.bpmspace.net
+      caddy.reverse_proxy: "{{upstreams 80}}"
 
   ${PROJECT_NAME}-redisserver_DEV:
     image: redis/redis-stack:latest
@@ -55,6 +96,8 @@ services:
       caddy.reverse_proxy: "{{upstreams 80}}"
 
 volumes:
+  ${PROJECT_NAME}-mariadb-data_DEV:
+    driver: local
   ${PROJECT_NAME}-redis-data_DEV:
     driver: local
 
