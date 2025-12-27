@@ -1,78 +1,81 @@
 # bpm-phpProjectsBoilerplate
 
-**Template Repository for PHP/Apache/Redis Projects with FlightPHP**
+**Template Repository for PHP/Apache/Redis/MariaDB Projects with FlightPHP**
 
 Uses **Alpine Linux** for minimal image size (~100MB vs ~500MB).
 
 ---
 
-## Installation Methods
+## Installation
 
-### Method 1: One-Line Install (into existing or new repo)
+### Into existing Git repo (uses folder name as project name)
 
 ```bash
-# Into EXISTING git repo (run from repo root)
+cd my-project-folder
 curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerplate/main/install.sh | bash
-
-# Create NEW project
-curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerplate/main/install.sh | bash -s -- bpm-MyNewProject
 ```
 
-### Method 2: Clone and Create Project
+### Into existing Git repo WITH FlightPHP Skeleton
 
 ```bash
-# Clone boilerplate (once)
-git clone git@github.com:BPMspaceUG/bpm-phpProjectsBoilerplate.git
-cd bpm-phpProjectsBoilerplate
+cd my-project-folder
+curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerplate/main/install.sh | bash -s -- --skeleton
+```
 
-# Create new project
-./init-new-project.sh bpm-MyNewProject
-cd ../bpm-MyNewProject
+### Create new project
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerplate/main/install.sh | bash -s -- bpm-MyProject
+```
+
+### Create new project WITH FlightPHP Skeleton
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerplate/main/install.sh | bash -s -- bpm-MyProject --skeleton
 ```
 
 ### After Installation
 
 ```bash
-# Set passwords
-nano .env.DEV
-
-# Optional: Add FlightPHP
-./integrate-flightphp-skeleton.sh
-
-# Start
+# Start DEV environment
 sudo docker compose -f docker-compose.DEV.yml up -d --build
 
-# Create GitHub repo
-gh repo create bpm-MyNewProject --private --source=. --remote=origin
+# Create GitHub repo (optional)
+gh repo create bpm-MyProject --private --source=. --remote=origin
 git push -u origin master
 ```
 
 ---
 
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--skeleton` or `-s` | Install FlightPHP Skeleton automatically |
+| `<project-name>` | Set project name (optional in existing repo) |
+
+---
+
 ## What's Included
 
-### Docker Setup
-- `Dockerfile.Apache.DEV` - Full dev tools (vim, nano, jq, git, etc.)
-- `Dockerfile.Apache.TEST.PROD` - Minimal, code baked in
-- `docker-compose.DEV.yml` - With volume mounts for live editing
-- `docker-compose.TEST.yml` - No mounts, for testing
+### Services (Docker)
+- **PHP/Apache** (Alpine) - Main application
+- **MariaDB** (latest) - Database
+- **Redis Stack** - Caching
+- **phpMyAdmin** - Database admin UI
+- **phpRedisAdmin** - Redis admin UI
 
-### Services
-- **PHP/Apache** - Main application
-- **Redis Stack** - Caching and data storage
-- **PHPRedisAdmin** - Redis web interface
+### Scripts
+- `install.sh` - One-line installer (curl)
+- `init-new-project.sh` - Local project creation
+- `integrate-flightphp-skeleton.sh` - Add FlightPHP
+- `generate-passwords.sh` - Secure password generation
 
 ### Configuration
 - `.env.*.template` - Environment templates
 - Fully parameterized with `${PROJECT_NAME}`
-
-### Scripts
-- `init-new-project.sh` - Create new project from boilerplate
-- `integrate-flightphp-skeleton.sh` - Add FlightPHP to project
-
-### Documentation
-- `IMPORTANT-PROJECT-STRUCTURE.md` - For AI agents
-- `TECHNOLOGY-STANDARDS.md` - Coding standards
+- Auto-generated secure passwords
+- MYSQL_DATABASE/USER set to project name
 
 ---
 
@@ -83,10 +86,21 @@ git push -u origin master
 | Framework | FlightPHP v3 |
 | Templates | Latte (recommended) |
 | Tables | DataTables (MANDATORY) |
+| Database | MariaDB |
 | Cache | Redis |
-| Server | Apache |
+| Server | Apache (Alpine) |
 | Container | Docker |
 | Reverse Proxy | Caddy |
+
+---
+
+## URLs after Start
+
+| Service | DEV | TEST |
+|---------|-----|------|
+| App | `${PROJECT_NAME}.dev.bpmspace.net` | `${PROJECT_NAME}.test.bpmspace.net` |
+| phpMyAdmin | `pma-${PROJECT_NAME}.dev.bpmspace.net` | `pma-${PROJECT_NAME}.test.bpmspace.net` |
+| Redis Admin | `pmr-${PROJECT_NAME}.dev.bpmspace.net` | `pmr-${PROJECT_NAME}.test.bpmspace.net` |
 
 ---
 
@@ -100,25 +114,26 @@ git push -u origin master
 
 ---
 
-## Directory Structure (New Project)
+## Directory Structure
 
 ```
-my-project/
+project/
 ├── Dockerfile.Apache.DEV
 ├── Dockerfile.Apache.TEST.PROD
 ├── docker-compose.DEV.yml
 ├── docker-compose.TEST.yml
-├── .env.DEV                    # Created from template
-├── .env.TEST                   # Created from template
+├── .env.DEV                    # Auto-generated passwords
+├── .env.TEST                   # Auto-generated passwords
+├── generate-passwords.sh
 ├── integrate-flightphp-skeleton.sh
 ├── IMPORTANT-PROJECT-STRUCTURE.md
 ├── TECHNOLOGY-STANDARDS.md
 ├── www/                        # Application code
 │   ├── public/                 # Webroot
 │   │   └── index.php
-│   ├── app/                    # FlightPHP app
+│   ├── app/                    # FlightPHP (if --skeleton)
 │   └── composer.json
-└── scripts/                    # Bash scripts
+└── scripts/
     ├── cont_*.sh               # Run inside container
     └── ext_*.sh                # Run on host
 ```
@@ -128,27 +143,17 @@ my-project/
 ## Quick Commands
 
 ```bash
-# DEV: Start
+# DEV
 sudo docker compose -f docker-compose.DEV.yml up -d --build
-
-# DEV: Logs
 sudo docker compose -f docker-compose.DEV.yml logs -f
-
-# DEV: Stop
 sudo docker compose -f docker-compose.DEV.yml down
 
-# TEST: Build and start
+# TEST
 sudo docker compose -f docker-compose.TEST.yml up -d --build
 
 # Enter container
 docker exec -it ${PROJECT_NAME}_DEV bash
 
-# Install composer dependencies
-docker exec -it ${PROJECT_NAME}_DEV bash -c 'cd /var/www/html && composer install'
+# Regenerate passwords
+./generate-passwords.sh
 ```
-
----
-
-## License
-
-MIT
