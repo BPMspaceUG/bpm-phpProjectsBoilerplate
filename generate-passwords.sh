@@ -25,6 +25,8 @@ echo -e "${CYAN}Generating secure passwords...${NC}"
 MYSQL_ROOT_PASS=$(generate_password)
 MYSQL_PASS=$(generate_password)
 REDIS_ADMIN_PASS=$(generate_password)
+APP_ADMIN_PASS=$(generate_password)
+API_KEY=$(generate_password)
 
 # Function to update passwords in .env file
 update_env_file() {
@@ -44,6 +46,10 @@ update_env_file() {
 
     # Update Redis admin password
     sed -i "s/REDIS_ADMIN_PASS=.*/REDIS_ADMIN_PASS=$REDIS_ADMIN_PASS/" "$ENV_FILE"
+
+    # Update App admin password and API key
+    sed -i "s/APP_ADMIN_PASS=.*/APP_ADMIN_PASS=$APP_ADMIN_PASS/" "$ENV_FILE"
+    sed -i "s/API_KEY=.*/API_KEY=$API_KEY/" "$ENV_FILE"
 
     # Update MYSQL_DATABASE and MYSQL_USER to PROJECT_NAME (without bpm- prefix, lowercase)
     if [ -n "$PROJECT_NAME" ]; then
@@ -74,6 +80,9 @@ echo ""
 echo -e "  ${CYAN}MySQL Root Password:${NC} $MYSQL_ROOT_PASS"
 echo -e "  ${CYAN}MySQL User Password:${NC} $MYSQL_PASS"
 echo -e "  ${CYAN}Redis Admin Password:${NC} $REDIS_ADMIN_PASS"
+echo -e "  ${CYAN}App Admin User:${NC} admin"
+echo -e "  ${CYAN}App Admin Password:${NC} $APP_ADMIN_PASS"
+echo -e "  ${CYAN}API Key:${NC} $API_KEY"
 if [ -n "$PROJECT_NAME" ]; then
     DB_NAME=$(echo "$PROJECT_NAME" | sed 's/^bpm-//' | tr '[:upper:]' '[:lower:]' | tr '-' '_')
     echo -e "  ${CYAN}MySQL Database/User:${NC} $DB_NAME"
