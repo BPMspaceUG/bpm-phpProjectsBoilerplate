@@ -54,6 +54,7 @@ cp -r .env.PROD.template "$TARGET_DIR/"
 cp -r .gitignore "$TARGET_DIR/"
 cp -r integrate-flightphp-skeleton.sh "$TARGET_DIR/"
 cp -r generate-passwords.sh "$TARGET_DIR/"
+cp -r sync_claude_agents_skills.sh "$TARGET_DIR/"
 cp -r IMPORTANT-PROJECT-STRUCTURE.md "$TARGET_DIR/"
 cp -r TECHNOLOGY-STANDARDS.md "$TARGET_DIR/"
 
@@ -63,6 +64,9 @@ if [ -d "www" ]; then
 fi
 if [ -d "scripts" ]; then
     cp -r scripts "$TARGET_DIR/"
+fi
+if [ -d ".claude" ]; then
+    cp -r .claude "$TARGET_DIR/"
 fi
 
 # Create directories if they don't exist

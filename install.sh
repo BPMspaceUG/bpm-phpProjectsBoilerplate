@@ -93,7 +93,8 @@ curl -fsSL "$RAW_URL/.env.PROD.template" -o .env.PROD.template
 # Download scripts
 curl -fsSL "$RAW_URL/integrate-flightphp-skeleton.sh" -o integrate-flightphp-skeleton.sh
 curl -fsSL "$RAW_URL/generate-passwords.sh" -o generate-passwords.sh
-chmod +x integrate-flightphp-skeleton.sh generate-passwords.sh
+curl -fsSL "$RAW_URL/sync_claude_agents_skills.sh" -o sync_claude_agents_skills.sh
+chmod +x integrate-flightphp-skeleton.sh generate-passwords.sh sync_claude_agents_skills.sh
 
 # Download documentation
 curl -fsSL "$RAW_URL/IMPORTANT-PROJECT-STRUCTURE.md" -o IMPORTANT-PROJECT-STRUCTURE.md
@@ -159,6 +160,11 @@ echo ""
 echo -e "${CYAN}Generating secure passwords...${NC}"
 ./generate-passwords.sh
 
+# Install Claude Agents and Skills
+echo ""
+echo -e "${CYAN}Installing Claude Agents & Skills...${NC}"
+./sync_claude_agents_skills.sh
+
 # Install FlightPHP Skeleton if requested
 if [ "$INSTALL_SKELETON" = true ]; then
     echo ""
@@ -181,6 +187,9 @@ echo "  - docker-compose.TEST.yml"
 echo "  - .env.DEV / .env.TEST (with generated passwords)"
 echo "  - integrate-flightphp-skeleton.sh"
 echo "  - generate-passwords.sh"
+echo "  - sync_claude_agents_skills.sh"
+echo "  - .claude/agents/ (6 specialized agents)"
+echo "  - .claude/skills/ (4 skill sets)"
 echo "  - IMPORTANT-PROJECT-STRUCTURE.md"
 echo "  - TECHNOLOGY-STANDARDS.md"
 if [ "$INSTALL_SKELETON" = true ]; then

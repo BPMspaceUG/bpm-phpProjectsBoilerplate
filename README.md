@@ -70,6 +70,21 @@ git push -u origin master
 - `init-new-project.sh` - Local project creation
 - `integrate-flightphp-skeleton.sh` - Add FlightPHP
 - `generate-passwords.sh` - Secure password generation
+- `sync_claude_agents_skills.sh` - Update Claude AI agents/skills
+
+### Claude AI Agents (.claude/agents/)
+- `php-specialist.md` - FlightPHP/PHP expert
+- `test-specialist.md` - Testing automation
+- `frontend-developer.md` - HTML/CSS/JS/DataTables
+- `database-specialist.md` - MariaDB optimization
+- `latte-specialist.md` - Latte template engine
+- `code-reviewer.md` - Code quality review
+
+### Claude AI Skills (.claude/skills/)
+- `php-standards/` - PHP coding standards
+- `testing-standards/` - Test guidelines
+- `database-patterns/` - Query optimization
+- `frontend-standards/` - UI/UX standards
 
 ### Configuration
 - `.env.*.template` - Environment templates
@@ -126,8 +141,22 @@ project/
 ├── .env.TEST                   # Auto-generated passwords
 ├── generate-passwords.sh
 ├── integrate-flightphp-skeleton.sh
+├── sync_claude_agents_skills.sh
 ├── IMPORTANT-PROJECT-STRUCTURE.md
 ├── TECHNOLOGY-STANDARDS.md
+├── .claude/
+│   ├── agents/                 # AI specialists
+│   │   ├── php-specialist.md
+│   │   ├── test-specialist.md
+│   │   ├── frontend-developer.md
+│   │   ├── database-specialist.md
+│   │   ├── latte-specialist.md
+│   │   └── code-reviewer.md
+│   └── skills/                 # Coding standards
+│       ├── php-standards/
+│       ├── testing-standards/
+│       ├── database-patterns/
+│       └── frontend-standards/
 ├── www/                        # Application code
 │   ├── public/                 # Webroot
 │   │   └── index.php
@@ -156,4 +185,7 @@ docker exec -it ${PROJECT_NAME}_DEV bash
 
 # Regenerate passwords
 ./generate-passwords.sh
+
+# Update Claude agents/skills from boilerplate
+./sync_claude_agents_skills.sh
 ```
