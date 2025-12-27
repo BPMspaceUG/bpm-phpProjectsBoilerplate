@@ -38,12 +38,14 @@ curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerpla
 
 ```bash
 # Start DEV environment
-sudo docker compose -f docker-compose.DEV.yml up -d --build
+sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build
 
 # Create GitHub repo (optional)
 gh repo create bpm-MyProject --private --source=. --remote=origin
 git push -u origin master
 ```
+
+> **Note:** Docker Compose requires `--env-file .env.DEV` to substitute `${PROJECT_NAME}` variables in the compose file. Without it, you'll get warnings about missing variables.
 
 ---
 
@@ -71,6 +73,7 @@ git push -u origin master
 - `integrate-flightphp-skeleton.sh` - Add FlightPHP
 - `generate-passwords.sh` - Secure password generation
 - `sync_claude_agents_skills.sh` - Update Claude AI agents/skills
+- `Makefile` - Simplified docker commands (`make dev`, `make logs`, etc.)
 
 ### Claude AI Agents (.claude/agents/)
 - `orchestrator.md` - Tech lead, task coordination, review gates
@@ -140,6 +143,7 @@ project/
 ├── docker-compose.TEST.yml
 ├── .env.DEV                    # Auto-generated passwords
 ├── .env.TEST                   # Auto-generated passwords
+├── Makefile                    # Easy: make dev, make logs, etc.
 ├── generate-passwords.sh
 ├── integrate-flightphp-skeleton.sh
 ├── sync_claude_agents_skills.sh
@@ -171,23 +175,40 @@ project/
 
 ---
 
-## Quick Commands
+## Quick Commands (Makefile)
+
+| DEV | TEST | Description |
+|-----|------|-------------|
+| `make dev` | `make test` | Full restart (down + build + up) |
+| `make dev-up` | `make test-up` | Quick restart (down + up, no build) |
+| `make dev-build` | `make test-build` | Build only (no down) |
+| `make dev-down` | `make test-down` | Stop environment |
+| `make logs` | `make test-logs` | View logs (follow) |
+
+**Utilities:**
+| Command | Description |
+|---------|-------------|
+| `make shell` | Enter DEV container |
+| `make ps` | List project containers |
+| `make passwords` | Regenerate passwords |
+| `make sync-claude` | Update Claude agents/skills |
+
+<details>
+<summary>Full Docker Commands (without Makefile)</summary>
 
 ```bash
 # DEV
-sudo docker compose -f docker-compose.DEV.yml up -d --build
-sudo docker compose -f docker-compose.DEV.yml logs -f
-sudo docker compose -f docker-compose.DEV.yml down
+sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build
+sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml logs -f
+sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml down
 
 # TEST
-sudo docker compose -f docker-compose.TEST.yml up -d --build
+sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml up -d --build
 
 # Enter container
 docker exec -it ${PROJECT_NAME}_DEV bash
-
-# Regenerate passwords
-./generate-passwords.sh
-
-# Update Claude agents/skills from boilerplate
-./sync_claude_agents_skills.sh
 ```
+
+> **Note:** `--env-file` is required to substitute `${PROJECT_NAME}` variables.
+
+</details>

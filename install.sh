@@ -96,6 +96,9 @@ curl -fsSL "$RAW_URL/generate-passwords.sh" -o generate-passwords.sh
 curl -fsSL "$RAW_URL/sync_claude_agents_skills.sh" -o sync_claude_agents_skills.sh
 chmod +x integrate-flightphp-skeleton.sh generate-passwords.sh sync_claude_agents_skills.sh
 
+# Download Makefile
+curl -fsSL "$RAW_URL/Makefile" -o Makefile
+
 # Download documentation
 curl -fsSL "$RAW_URL/IMPORTANT-PROJECT-STRUCTURE.md" -o IMPORTANT-PROJECT-STRUCTURE.md
 curl -fsSL "$RAW_URL/TECHNOLOGY-STANDARDS.md" -o TECHNOLOGY-STANDARDS.md
@@ -144,14 +147,24 @@ Created with bpm-phpProjectsBoilerplate
 # Optional: Add FlightPHP (if not installed with --skeleton)
 ./integrate-flightphp-skeleton.sh
 
-# Start
-sudo docker compose -f docker-compose.DEV.yml up -d --build
+# Start DEV environment
+sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build
+
+# Or use Makefile (easier)
+make dev
 \`\`\`
 
 ## URLs
 - App: https://$PROJECT_NAME.dev.bpmspace.net
 - phpMyAdmin: https://pma-$PROJECT_NAME.dev.bpmspace.net
 - Redis Admin: https://pmr-$PROJECT_NAME.dev.bpmspace.net
+
+## Commands (Makefile)
+- \`make dev\` - Start DEV
+- \`make test\` - Start TEST
+- \`make logs\` - View DEV logs
+- \`make down\` - Stop DEV
+- \`make shell\` - Enter DEV container
 EOF
 fi
 
@@ -212,6 +225,7 @@ echo "  - Dockerfile.Apache.TEST.PROD"
 echo "  - docker-compose.DEV.yml"
 echo "  - docker-compose.TEST.yml"
 echo "  - .env.DEV / .env.TEST (with generated passwords)"
+echo "  - Makefile (easy docker commands)"
 echo "  - integrate-flightphp-skeleton.sh"
 echo "  - generate-passwords.sh"
 echo "  - sync_claude_agents_skills.sh"
@@ -226,9 +240,9 @@ echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 if [ "$INSTALL_SKELETON" = false ]; then
     echo "  1. ./integrate-flightphp-skeleton.sh  # Optional: Add FlightPHP"
-    echo "  2. sudo docker compose -f docker-compose.DEV.yml up -d --build"
+    echo "  2. make dev   # or: sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build"
 else
-    echo "  1. sudo docker compose -f docker-compose.DEV.yml up -d --build"
+    echo "  1. make dev   # or: sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build"
 fi
 echo ""
 echo -e "${CYAN}URLs after start:${NC}"

@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Apache.TEST.PROD
+    image: ${PROJECT_NAME}_TEST:latest
     container_name: ${PROJECT_NAME}_TEST
     hostname: ${PROJECT_NAME}_TEST
     restart: always
