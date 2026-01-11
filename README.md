@@ -72,7 +72,7 @@ git push -u origin master
 - `init-new-project.sh` - Local project creation
 - `integrate-flightphp-skeleton.sh` - Add FlightPHP
 - `generate-passwords.sh` - Secure password generation
-- `sync_claude_agents_skills.sh` - Update Claude AI agents/skills
+- `sync-claude-agents-skills.sh` - Update Claude AI agents/skills
 - `Makefile` - Simplified docker commands (`make dev`, `make logs`, etc.)
 
 ### Claude AI Agents (.claude/agents/)
@@ -146,7 +146,7 @@ project/
 ├── Makefile                    # Easy: make dev, make logs, etc.
 ├── generate-passwords.sh
 ├── integrate-flightphp-skeleton.sh
-├── sync_claude_agents_skills.sh
+├── sync-claude-agents-skills.sh
 ├── IMPORTANT-PROJECT-STRUCTURE.md
 ├── TECHNOLOGY-STANDARDS.md
 ├── .claude/

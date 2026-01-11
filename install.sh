@@ -93,8 +93,8 @@ curl -fsSL "$RAW_URL/.env.PROD.template" -o .env.PROD.template
 # Download scripts
 curl -fsSL "$RAW_URL/integrate-flightphp-skeleton.sh" -o integrate-flightphp-skeleton.sh
 curl -fsSL "$RAW_URL/generate-passwords.sh" -o generate-passwords.sh
-curl -fsSL "$RAW_URL/sync_claude_agents_skills.sh" -o sync_claude_agents_skills.sh
-chmod +x integrate-flightphp-skeleton.sh generate-passwords.sh sync_claude_agents_skills.sh
+curl -fsSL "$RAW_URL/sync-claude-agents-skills.sh" -o sync-claude-agents-skills.sh
+chmod +x integrate-flightphp-skeleton.sh generate-passwords.sh sync-claude-agents-skills.sh
 
 # Download Makefile
 curl -fsSL "$RAW_URL/Makefile" -o Makefile
@@ -181,7 +181,7 @@ echo -e "${CYAN}Generating secure passwords...${NC}"
 # Install Claude Agents and Skills
 echo ""
 echo -e "${CYAN}Installing Claude Agents & Skills...${NC}"
-./sync_claude_agents_skills.sh
+./sync-claude-agents-skills.sh
 
 # Fix ownership of AI tool directories (may be created by root/other users)
 CURRENT_USER=$(whoami)
@@ -233,7 +233,7 @@ echo "  - .env.DEV / .env.TEST (with generated passwords)"
 echo "  - Makefile (easy docker commands)"
 echo "  - integrate-flightphp-skeleton.sh"
 echo "  - generate-passwords.sh"
-echo "  - sync_claude_agents_skills.sh"
+echo "  - sync-claude-agents-skills.sh"
 echo "  - .claude/agents/ (7 specialized agents)"
 echo "  - .claude/skills/ (4 skill sets)"
 echo "  - IMPORTANT-PROJECT-STRUCTURE.md"

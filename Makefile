@@ -107,4 +107,4 @@ passwords:
 	./generate-passwords.sh
 
 sync-claude:
-	./sync_claude_agents_skills.sh
+	./sync-claude-agents-skills.sh
