@@ -26,8 +26,10 @@ services:
       - './scripts:/var/scripts'
     working_dir: /var/www/html
     depends_on:
-      - mariadb_dev
-      - redisserver_dev
+      mariadb_dev:
+        condition: service_healthy
+      redisserver_dev:
+        condition: service_healthy
     networks:
       - internal_dev
       - caddy
@@ -50,6 +52,12 @@ services:
       - mariadb-data_dev:/var/lib/mysql
     networks:
       - internal_dev
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   phpmyadmin_dev:
     image: phpmyadmin:latest
@@ -78,6 +86,12 @@ services:
       - redis-data_dev:/data
     networks:
       - internal_dev
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   phpredisadmin_dev:
     image: erikdubbelboer/phpredisadmin

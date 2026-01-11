@@ -23,8 +23,10 @@ services:
       - DB_PASSWORD=${MYSQL_PASSWORD}
     working_dir: /var/www/html
     depends_on:
-      - mariadb_test
-      - redisserver_test
+      mariadb_test:
+        condition: service_healthy
+      redisserver_test:
+        condition: service_healthy
     networks:
       - internal_test
       - caddy
@@ -47,6 +49,12 @@ services:
       - mariadb-data_test:/var/lib/mysql
     networks:
       - internal_test
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   phpmyadmin_test:
     image: phpmyadmin:latest
@@ -75,6 +83,12 @@ services:
       - redis-data_test:/data
     networks:
       - internal_test
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   phpredisadmin_test:
     image: erikdubbelboer/phpredisadmin
