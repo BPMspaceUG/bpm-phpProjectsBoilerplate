@@ -73,7 +73,7 @@ update_env_file ".env.DEV" "$PROJECT_NAME"
 update_env_file ".env.TEST" "$PROJECT_NAME"
 
 echo ""
-echo -e "${GREEN}✅ Passwords generated successfully!${NC}"
+echo -e "${GREEN}Passwords generated successfully!${NC}"
 echo ""
 echo -e "${YELLOW}Generated credentials (save these somewhere safe!):${NC}"
 echo ""

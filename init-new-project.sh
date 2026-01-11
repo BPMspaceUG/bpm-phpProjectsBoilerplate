@@ -39,11 +39,11 @@ if [ -d "$TARGET_DIR" ]; then
 fi
 
 # Create target directory
-echo "📁 Creating project directory..."
+echo "Creating project directory..."
 mkdir -p "$TARGET_DIR"
 
 # Copy all files (excluding .git)
-echo "📋 Copying boilerplate files..."
+echo "Copying boilerplate files..."
 cp -r Dockerfile.Apache.DEV "$TARGET_DIR/"
 cp -r Dockerfile.Apache.TEST.PROD "$TARGET_DIR/"
 cp -r docker-compose.DEV.yml "$TARGET_DIR/"
@@ -75,7 +75,7 @@ mkdir -p "$TARGET_DIR/www/public"
 mkdir -p "$TARGET_DIR/scripts"
 
 # Create .env files from templates and set PROJECT_NAME
-echo "⚙️  Configuring environment files..."
+echo "Configuring environment files..."
 cp "$TARGET_DIR/.env.DEV.template" "$TARGET_DIR/.env.DEV"
 cp "$TARGET_DIR/.env.TEST.template" "$TARGET_DIR/.env.TEST"
 
@@ -129,19 +129,19 @@ cd "$TARGET_DIR"
 
 # Initialize new git repository
 echo ""
-echo "🔧 Initializing git repository..."
+echo "Initializing git repository..."
 git init
 git add .
 git commit -m "Initial commit from bpm-phpProjectsBoilerplate
 
-🤖 Generated with Claude Code"
+Generated with Claude Code"
 
 echo ""
 echo -e "${GREEN}============================================${NC}"
 echo -e "${GREEN}  Project $PROJECT_NAME created!${NC}"
 echo -e "${GREEN}============================================${NC}"
 echo ""
-echo "📍 Location: $TARGET_DIR"
+echo "Location: $TARGET_DIR"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo "  1. cd $TARGET_DIR"
