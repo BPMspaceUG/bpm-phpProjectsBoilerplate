@@ -9,7 +9,6 @@
 set -e
 
 # Colors
-RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
@@ -26,7 +25,7 @@ fi
 # Check if www already has content
 if [ -f "www/composer.json" ]; then
     echo -e "${YELLOW}Warning: www/composer.json already exists!${NC}"
-    read -p "Overwrite? (y/N): " confirm
+    read -rp "Overwrite? (y/N): " confirm
     if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
         echo "Aborted."
         exit 0

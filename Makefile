@@ -14,7 +14,7 @@
 DC_DEV  := sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml
 DC_TEST := sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml
 
-.PHONY: dev dev-up dev-build dev-down down test test-up test-build test-down logs shell ps help
+.PHONY: dev dev-up dev-build dev-down down test test-up test-build test-down logs shell ps lint help
 
 # Default target
 help:
@@ -36,6 +36,7 @@ help:
 	@echo "  make shell      - Enter DEV container"
 	@echo "  make ps         - List project containers"
 	@echo "  make passwords  - Regenerate passwords"
+	@echo "  make lint       - Run ShellCheck on bash scripts"
 
 # ============================================
 # DEV Environment
@@ -108,3 +109,7 @@ passwords:
 
 sync-claude:
 	./sync-claude-agents-skills.sh
+
+lint:
+	@echo "Running ShellCheck on bash scripts..."
+	@shellcheck *.sh && echo "All scripts passed ShellCheck"

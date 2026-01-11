@@ -89,7 +89,7 @@ sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_L
 sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_LOWER/g" "$TARGET_DIR/.env.TEST"
 
 # Extract app name from project name (remove bpm- prefix if present)
-APP_NAME=$(echo "$PROJECT_NAME" | sed 's/^bpm-//')
+APP_NAME=${PROJECT_NAME#bpm-}
 sed -i "s/APP_NAME=MyNewProject/APP_NAME=$APP_NAME/g" "$TARGET_DIR/.env.DEV"
 sed -i "s/APP_NAME=MyNewProject/APP_NAME=$APP_NAME/g" "$TARGET_DIR/.env.TEST"
 

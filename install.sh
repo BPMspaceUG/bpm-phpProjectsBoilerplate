@@ -45,7 +45,6 @@ echo ""
 # Detect if we're in a git repo
 if [ -d ".git" ]; then
     echo -e "${CYAN}Detected existing git repository${NC}"
-    INSTALL_MODE="existing"
 
     # Use folder name as PROJECT_NAME if not provided
     if [ -z "$PROJECT_NAME" ]; then
@@ -54,7 +53,6 @@ if [ -d ".git" ]; then
     fi
 else
     echo -e "${CYAN}No git repository detected - creating new project${NC}"
-    INSTALL_MODE="new"
 
     if [ -z "$PROJECT_NAME" ]; then
         echo -e "${RED}Error: Please provide a project name!${NC}"
@@ -105,9 +103,11 @@ curl -fsSL "$RAW_URL/TECHNOLOGY-STANDARDS.md" -o TECHNOLOGY-STANDARDS.md
 
 # Download gitignore (append if exists)
 if [ -f ".gitignore" ]; then
-    echo "" >> .gitignore
-    echo "# === bpm-phpProjectsBoilerplate ===" >> .gitignore
-    curl -fsSL "$RAW_URL/.gitignore" >> .gitignore
+    {
+        echo ""
+        echo "# === bpm-phpProjectsBoilerplate ==="
+        curl -fsSL "$RAW_URL/.gitignore"
+    } >> .gitignore
 else
     curl -fsSL "$RAW_URL/.gitignore" -o .gitignore
 fi
@@ -135,7 +135,7 @@ sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_L
 sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_LOWER/g" .env.TEST
 
 # Set APP_NAME (remove bpm- prefix)
-APP_NAME=$(echo "$PROJECT_NAME" | sed 's/^bpm-//')
+APP_NAME=${PROJECT_NAME#bpm-}
 sed -i "s/APP_NAME=MyNewProject/APP_NAME=$APP_NAME/g" .env.DEV
 sed -i "s/APP_NAME=MyNewProject/APP_NAME=$APP_NAME/g" .env.TEST
 
