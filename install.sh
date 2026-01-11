@@ -129,6 +129,11 @@ cp .env.TEST.template .env.TEST
 sed -i "s/PROJECT_NAME=bpm-MyNewProject/PROJECT_NAME=$PROJECT_NAME/g" .env.DEV
 sed -i "s/PROJECT_NAME=bpm-MyNewProject/PROJECT_NAME=$PROJECT_NAME/g" .env.TEST
 
+# Set PROJECT_NAME_LOWER (Docker requires lowercase image names)
+PROJECT_NAME_LOWER=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]')
+sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_LOWER/g" .env.DEV
+sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_LOWER/g" .env.TEST
+
 # Set APP_NAME (remove bpm- prefix)
 APP_NAME=$(echo "$PROJECT_NAME" | sed 's/^bpm-//')
 sed -i "s/APP_NAME=MyNewProject/APP_NAME=$APP_NAME/g" .env.DEV

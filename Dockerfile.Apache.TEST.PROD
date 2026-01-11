@@ -1,8 +1,8 @@
 # ============================================
-# TEST / PRODUCTION VERSION (Alpine - Minimal!)
+# TEST / PRODUCTION VERSION (Debian bookworm - Minimal!)
 # Dockerfile.Apache.TEST.PROD
 # ============================================
-FROM php:apache-alpine
+FROM php:8.4-apache-bookworm
 
 ARG ARG_VERSION
 ARG ARG_PUSH_SHA
@@ -14,14 +14,15 @@ ENV IMAGE_DATE=$ARG_DATE \
     APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 # Install ONLY runtime dependencies (minimal)
-RUN apk update && apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     unzip \
     wget \
     curl \
     && docker-php-ext-install pdo_mysql mysqli zip \
     && docker-php-source delete \
-    && rm -rf /var/cache/apk/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -36,20 +37,23 @@ COPY ./scripts /var/scripts
 # Install PHP dependencies
 RUN cd /var/www/html && composer install --no-dev --optimize-autoloader --no-interaction 2>/dev/null || true
 
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
 # Update Apache DocumentRoot to public folder
-RUN sed -ri -e 's!/var/www/localhost/htdocs!/var/www/html/public!g' /etc/apache2/httpd.conf 2>/dev/null || true
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
 
 # Create .htaccess support
-RUN sed -i '/<Directory "\/var\/www/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/httpd.conf 2>/dev/null || true
+RUN sed -i '/<Directory \/var\/www\//,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Set permissions
-RUN chown -R apache:apache /var/www/html 2>/dev/null || chown -R www-data:www-data /var/www/html 2>/dev/null || true \
-    && chown -R apache:apache /var/scripts 2>/dev/null || chown -R www-data:www-data /var/scripts 2>/dev/null || true
+RUN chown -R www-data:www-data /var/www/html \
+    && chown -R www-data:www-data /var/scripts
 
 # Directory for backups
 RUN mkdir -p /var/www/redisbackup \
-    && chown -R apache:apache /var/www/redisbackup 2>/dev/null || chown -R www-data:www-data /var/www/redisbackup 2>/dev/null || true
+    && chown -R www-data:www-data /var/www/redisbackup
 
 WORKDIR /var/www/html
 
-CMD ["httpd-foreground"]
+CMD ["apache2-foreground"]

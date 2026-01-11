@@ -1,8 +1,8 @@
 # ============================================
-# DEVELOPMENT VERSION (Alpine - Small!)
+# DEVELOPMENT VERSION (Debian bookworm)
 # Dockerfile.Apache.DEV
 # ============================================
-FROM php:apache-alpine
+FROM php:8.4-apache-bookworm
 
 ARG ARG_VERSION
 ARG ARG_PUSH_SHA
@@ -14,7 +14,7 @@ ENV IMAGE_DATE=$ARG_DATE \
     APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 # Install dependencies (Development setup - includes dev tools)
-RUN apk update && apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     unzip \
     wget \
@@ -24,9 +24,10 @@ RUN apk update && apk add --no-cache \
     jq \
     git \
     openssh-client \
-    bash \
     && docker-php-ext-install pdo_mysql mysqli zip \
-    && docker-php-source delete
+    && docker-php-source delete \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -35,24 +36,22 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer
 
 # Enable Apache modules
-RUN sed -i 's/#LoadModule rewrite_module/LoadModule rewrite_module/' /usr/local/apache2/conf/httpd.conf 2>/dev/null || true \
-    && sed -i 's/#LoadModule headers_module/LoadModule headers_module/' /usr/local/apache2/conf/httpd.conf 2>/dev/null || true
+RUN a2enmod rewrite headers
 
 # Update Apache DocumentRoot to public folder
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/conf.d/*.conf 2>/dev/null || true \
-    && sed -ri -e 's!/var/www/localhost/htdocs!/var/www/html/public!g' /etc/apache2/httpd.conf 2>/dev/null || true
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
 
 # Create .htaccess support
-RUN sed -i '/<Directory "\/var\/www/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/httpd.conf 2>/dev/null || true
+RUN sed -i '/<Directory \/var\/www\//,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Set permissions
-RUN chown -R apache:apache /var/www/html 2>/dev/null || chown -R www-data:www-data /var/www/html 2>/dev/null || true
+RUN chown -R www-data:www-data /var/www/html
 
 # Directory for backups
 RUN mkdir -p /var/www/redisbackup \
-    && chown -R apache:apache /var/www/redisbackup 2>/dev/null || chown -R www-data:www-data /var/www/redisbackup 2>/dev/null || true
+    && chown -R www-data:www-data /var/www/redisbackup
 
 # Working directory
 WORKDIR /var/www/html
 
-CMD ["httpd-foreground"]
+CMD ["apache2-foreground"]
