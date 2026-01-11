@@ -35,8 +35,8 @@ services:
   mariadb_test:
     image: mariadb:latest
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql_mode=""
-    container_name: ${PROJECT_NAME}-mariadb_test
-    hostname: ${PROJECT_NAME}-mariadb_test
+    container_name: ${PROJECT_NAME}_mariadb_test
+    hostname: ${PROJECT_NAME}_mariadb_test
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -50,13 +50,13 @@ services:
 
   phpmyadmin_test:
     image: phpmyadmin:latest
-    container_name: ${PROJECT_NAME}-phpmyadmin_test
-    hostname: ${PROJECT_NAME}-phpmyadmin_test
+    container_name: ${PROJECT_NAME}_phpmyadmin_test
+    hostname: ${PROJECT_NAME}_phpmyadmin_test
     restart: always
     environment:
       - PMA_HOST=mariadb_test
-      - MEMORY_LIMIT=1516M
-      - UPLOAD_LIMIT=1024M
+      - MEMORY_LIMIT=${PMA_MEMORY_LIMIT}
+      - UPLOAD_LIMIT=${PMA_UPLOAD_LIMIT}
     depends_on:
       - mariadb_test
     networks:
@@ -68,8 +68,8 @@ services:
 
   redisserver_test:
     image: redis/redis-stack:latest
-    container_name: ${PROJECT_NAME}-redisserver_test
-    hostname: ${PROJECT_NAME}-redisserver_test
+    container_name: ${PROJECT_NAME}_redisserver_test
+    hostname: ${PROJECT_NAME}_redisserver_test
     restart: always
     volumes:
       - redis-data_test:/data
@@ -78,8 +78,8 @@ services:
 
   phpredisadmin_test:
     image: erikdubbelboer/phpredisadmin
-    container_name: ${PROJECT_NAME}-phpredisadmin_test
-    hostname: ${PROJECT_NAME}-phpredisadmin_test
+    container_name: ${PROJECT_NAME}_phpredisadmin_test
+    hostname: ${PROJECT_NAME}_phpredisadmin_test
     restart: always
     environment:
       - REDIS_1_HOST=redisserver_test

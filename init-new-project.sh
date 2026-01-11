@@ -150,7 +150,7 @@ echo "  3. make dev  # or: sudo docker compose --env-file .env.DEV -f docker-com
 echo ""
 echo "  4. Create GitHub repo:"
 echo "     gh repo create $PROJECT_NAME --private --source=. --remote=origin"
-echo "     git push -u origin master"
+echo "     git push -u origin main"
 echo ""
 echo -e "${CYAN}URLs after start:${NC}"
 echo "  App:        https://$PROJECT_NAME.dev.bpmspace.net"
