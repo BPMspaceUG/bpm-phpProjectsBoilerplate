@@ -10,6 +10,10 @@
 #   make shell    - Enter container
 # ============================================
 
+# Docker Compose command shortcuts (reduces duplication)
+DC_DEV  := sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml
+DC_TEST := sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml
+
 .PHONY: dev dev-up dev-build dev-down down test test-up test-build test-down logs shell ps help
 
 # Default target
@@ -39,29 +43,29 @@ help:
 
 # Full restart: down + build + up (most common)
 dev:
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml down
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build
+	$(DC_DEV) down
+	$(DC_DEV) up -d --build
 
 # Quick restart: down + up (no build, fast)
 dev-up:
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml down
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d
+	$(DC_DEV) down
+	$(DC_DEV) up -d
 
 # Build only (no down first)
 dev-build:
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build
+	$(DC_DEV) up -d --build
 
 # Stop only
 dev-down:
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml down
+	$(DC_DEV) down
 
 down: dev-down
 
 logs:
-	sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml logs -f
+	$(DC_DEV) logs -f
 
 shell:
-	@CONTAINER=$$(sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml ps -q | head -1) && \
+	@CONTAINER=$$($(DC_DEV) ps -q | head -1) && \
 	if [ -n "$$CONTAINER" ]; then \
 		sudo docker exec -it $$CONTAINER bash; \
 	else \
@@ -74,23 +78,23 @@ shell:
 
 # Full restart: down + build + up
 test:
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml down
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml up -d --build
+	$(DC_TEST) down
+	$(DC_TEST) up -d --build
 
 # Quick restart: down + up (no build)
 test-up:
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml down
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml up -d
+	$(DC_TEST) down
+	$(DC_TEST) up -d
 
 # Build only
 test-build:
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml up -d --build
+	$(DC_TEST) up -d --build
 
 test-down:
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml down
+	$(DC_TEST) down
 
 test-logs:
-	sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml logs -f
+	$(DC_TEST) logs -f
 
 # ============================================
 # Utilities

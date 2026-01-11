@@ -91,13 +91,13 @@ Flight::route('POST /users', [UserController::class, 'create']);
 
 ### Configuration
 ```php
-// app/config/config.php - NO .env FILES!
+// app/config/config.php - Load from environment variables (.env files)
 return [
     'database' => [
-        'host' => 'localhost',
-        'name' => 'myapp',
-        'user' => 'myapp',
-        'pass' => 'secret'
+        'host' => getenv('MYSQL_HOST') ?: 'localhost',
+        'name' => getenv('MYSQL_DATABASE') ?: 'myapp',
+        'user' => getenv('MYSQL_USER') ?: 'myapp',
+        'pass' => getenv('MYSQL_PASSWORD') ?: ''
     ]
 ];
 ```

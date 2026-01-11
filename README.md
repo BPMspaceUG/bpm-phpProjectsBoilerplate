@@ -2,7 +2,7 @@
 
 **Template Repository for PHP/Apache/Redis/MariaDB Projects with FlightPHP**
 
-Uses **Alpine Linux** for minimal image size (~100MB vs ~500MB).
+Uses **Debian bookworm** base image for better compatibility and package availability.
 
 ---
 
@@ -61,7 +61,7 @@ git push -u origin master
 ## What's Included
 
 ### Services (Docker)
-- **PHP/Apache** (Alpine) - Main application
+- **PHP/Apache** (Debian bookworm) - Main application
 - **MariaDB** (latest) - Database
 - **Redis Stack** - Caching
 - **phpMyAdmin** - Database admin UI
@@ -107,7 +107,7 @@ git push -u origin master
 | Tables | DataTables (MANDATORY) |
 | Database | MariaDB |
 | Cache | Redis |
-| Server | Apache (Alpine) |
+| Server | Apache (Debian) |
 | Container | Docker |
 | Reverse Proxy | Caddy |
 

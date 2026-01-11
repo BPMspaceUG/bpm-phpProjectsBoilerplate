@@ -55,6 +55,7 @@ cp -r .gitignore "$TARGET_DIR/"
 cp -r integrate-flightphp-skeleton.sh "$TARGET_DIR/"
 cp -r generate-passwords.sh "$TARGET_DIR/"
 cp -r sync_claude_agents_skills.sh "$TARGET_DIR/"
+cp -r Makefile "$TARGET_DIR/"
 cp -r IMPORTANT-PROJECT-STRUCTURE.md "$TARGET_DIR/"
 cp -r TECHNOLOGY-STANDARDS.md "$TARGET_DIR/"
 
@@ -82,6 +83,11 @@ cp "$TARGET_DIR/.env.TEST.template" "$TARGET_DIR/.env.TEST"
 sed -i "s/PROJECT_NAME=bpm-MyNewProject/PROJECT_NAME=$PROJECT_NAME/g" "$TARGET_DIR/.env.DEV"
 sed -i "s/PROJECT_NAME=bpm-MyNewProject/PROJECT_NAME=$PROJECT_NAME/g" "$TARGET_DIR/.env.TEST"
 
+# Set PROJECT_NAME_LOWER (Docker requires lowercase image names)
+PROJECT_NAME_LOWER=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]')
+sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_LOWER/g" "$TARGET_DIR/.env.DEV"
+sed -i "s/PROJECT_NAME_LOWER=bpm-mynewproject/PROJECT_NAME_LOWER=$PROJECT_NAME_LOWER/g" "$TARGET_DIR/.env.TEST"
+
 # Extract app name from project name (remove bpm- prefix if present)
 APP_NAME=$(echo "$PROJECT_NAME" | sed 's/^bpm-//')
 sed -i "s/APP_NAME=MyNewProject/APP_NAME=$APP_NAME/g" "$TARGET_DIR/.env.DEV"
@@ -100,7 +106,7 @@ Created from bpm-phpProjectsBoilerplate
 ./integrate-flightphp-skeleton.sh
 
 # Start DEV environment
-sudo docker compose -f docker-compose.DEV.yml up -d --build
+make dev
 \`\`\`
 
 ## URLs
@@ -140,7 +146,7 @@ echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo "  1. cd $TARGET_DIR"
 echo "  2. ./integrate-flightphp-skeleton.sh  # Optional: Add FlightPHP"
-echo "  3. sudo docker compose -f docker-compose.DEV.yml up -d --build"
+echo "  3. make dev  # or: sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build"
 echo ""
 echo "  4. Create GitHub repo:"
 echo "     gh repo create $PROJECT_NAME --private --source=. --remote=origin"

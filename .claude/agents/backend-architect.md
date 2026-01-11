@@ -29,7 +29,7 @@ You are a senior backend architect specializing in **FlightPHP v3** architecture
 www/
 ├── app/
 │   ├── config/
-│   │   ├── config.php          # Main configuration (NO .env in app!)
+│   │   ├── config.php          # Main configuration (loads from .env)
 │   │   ├── routes.php          # Route definitions
 │   │   └── services.php        # Service registration
 │   ├── controllers/            # Request handlers
