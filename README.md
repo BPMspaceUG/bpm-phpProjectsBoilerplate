@@ -38,11 +38,11 @@ curl -fsSL https://raw.githubusercontent.com/BPMspaceUG/bpm-phpProjectsBoilerpla
 
 ```bash
 # Start DEV environment
-sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml up -d --build
+make dev
 
 # Create GitHub repo (optional)
 gh repo create bpm-MyProject --private --source=. --remote=origin
-git push -u origin master
+git push -u origin main
 ```
 
 > **Note:** Docker Compose requires `--env-file .env.DEV` to substitute `${PROJECT_NAME}` variables in the compose file. Without it, you'll get warnings about missing variables.
@@ -61,11 +61,13 @@ git push -u origin master
 ## What's Included
 
 ### Services (Docker)
-- **PHP/Apache** (Debian bookworm) - Main application
-- **MariaDB** (latest) - Database
-- **Redis Stack** - Caching
+- **PHP/Apache** (Debian bookworm, PHP 8.4) - Main application
+- **MariaDB** (latest) - Database with health checks
+- **Redis Stack** - Caching with health checks
 - **phpMyAdmin** - Database admin UI
 - **phpRedisAdmin** - Redis admin UI
+
+> App container waits for healthy MariaDB and Redis before starting.
 
 ### Scripts
 - `install.sh` - One-line installer (curl)
@@ -192,6 +194,7 @@ project/
 | `make ps` | List project containers |
 | `make passwords` | Regenerate passwords |
 | `make sync-claude` | Update Claude agents/skills |
+| `make lint` | Run ShellCheck on scripts |
 
 <details>
 <summary>Full Docker Commands (without Makefile)</summary>

@@ -14,7 +14,7 @@
 DC_DEV  := sudo docker compose --env-file .env.DEV -f docker-compose.DEV.yml
 DC_TEST := sudo docker compose --env-file .env.TEST -f docker-compose.TEST.yml
 
-.PHONY: dev dev-up dev-build dev-down down test test-up test-build test-down logs shell ps lint help
+.PHONY: dev dev-up dev-build dev-down down test test-up test-build test-down logs shell ps lint passwords sync-claude help
 
 # Default target
 help:
